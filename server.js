@@ -23,9 +23,15 @@ exports.start = function (config) {
 
     io.on('connection', function(socket) {
         console.log('a user connected');
+
+        socket.on('join', function(msg){
+            var t = socket.join(msg.room);
+            console.log(t);
+        });
         socket.on('chat message', function(msg){
-            console.log('message: ' + msg);
-            io.emit('chat message', msg);
+            console.log(msg);
+            //socket.join(msg.room);
+            io.to(msg.room).emit('chat message', msg.m);
         });
         socket.on('disconnect', function() {
             console.log('user disconnected');
