@@ -7,7 +7,7 @@ exports.start = function (config) {
     // var env = process.env.NODE_ENV || 'development';
     // if ('development' == env) {       
     // }
-    // else {       
+    // else {
     // }
 
     app.use( function(req, res, next){
@@ -15,23 +15,27 @@ exports.start = function (config) {
         next();
     });
 
-    app.get('/', function(req, res){
-        res.sendfile(__dirname + '/public/index.html');
-    });
+    // app.get('/', function(req, res){
+    //     res.sendfile(__dirname + '/public/index.html');
+    // });
 
-    //app.use(express.static( __dirname + '/public'));
+    app.use(express.static( __dirname + '/public'));
 
     io.on('connection', function(socket) {
         console.log('a user connected');
-
+        var nickname = undefined;
+        var room = undefined;
+        
         socket.on('join', function(msg){
-            var t = socket.join(msg.room);
-            console.log(t);
-        });
-        socket.on('chat message', function(msg){
             console.log(msg);
-            //socket.join(msg.room);
-            io.to(msg.room).emit('chat message', msg.m);
+            socket.join(msg.room);
+            room = msg.room;
+            nickname = msg.nickname;
+        });
+
+        socket.on('message', function(msg){
+            console.log(msg);
+            io.to(room).emit('message', nickname + '：' + msg.message);
         });
         socket.on('disconnect', function() {
             console.log('user disconnected');
@@ -43,4 +47,4 @@ exports.start = function (config) {
     var server = http.listen(config.port, function() {
         console.log('Listening on port %d', server.address().port);
     });
-}
+};

@@ -1,53 +1,115 @@
 <!doctype html>
 <html>
     <head>
+        <meta http-equiv='content-type' content='text/html; charset=utf-8'>
         <title>Socket.IO chat</title>
+        <link href='/css/bootstrap.min.css' rel='stylesheet'>
+        <link href='/css/jquery-ui.min.css' rel='stylesheet'>
         <style>
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body { font: 13px Helvetica, Arial; }
-            form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-            form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-            form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-            #messages { list-style-type: none; margin: 0; padding: 0; }
-            #messages li { padding: 5px 10px; }
-            #messages li:nth-child(odd) { background: #eee; }
+            ol, ul {
+                list-style: none;
+            }
+            .error {
+                color:red;
+            }
+            #operator {
+                position: fixed;
+                width: 100%;
+                bottom: 0;
+                padding: 15px;
+            }           
         </style>
     </head>
     <body>
-        <ul id="messages"></ul>
-        <form action="">
-            <input id="room" placeholder="room" />
-            <input id="nickname" placeholder="nickname" />
-            <input id="m" autocomplete="off" placeholder="message"/><button>Send</button>
-        </form>
+        <div class='container-fluid'>
+            <div class='row'>
+                <div class='col-md-12'>
+                    <h2 id='myroom' class='control-label'>MyRoom</h2>
+                    
+                </div>
+                <div class='col-md-12'>
+                    <h3 class='control-label'>message</h3>
+                    <ul id='messages'></ul>
+                </div>
+            </div>            
+        </div>
+        <div id='operator'>
+            <div class='form-group'>
+                <h3 id='myname'>MyName</h3>
+                <input id='message' class='form-control' autocomplete='off' placeholder='message'/>
+            </div>
+            <button id='send' class='btn btn-primary'>Send</button>
+        </div>
 
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+        <div id='join' class='join' title="Join Room" style='display:none'>
+            <div class='form-group'>
+                <input id='room' class='form-control' placeholder='Room' />
+            </div>
+            <div class='form-group'>
+                <input id='nickname' class='form-control' placeholder='Nickname' />
+            </div>
+            <div class='form-group'>
+                <span id='error' class='error'> </span>
+            </div>
+        </div>
+        
+
+        <script src='/socket.io/socket.io.js'></script>
+        <script src='/js/jquery-1.11.1.min.js'></script>
+        <script src='/js/jquery-ui.min.js'></script>
         <script>
-            var socket = io();
             var join = false;
-            $('form').submit(function(){
+            var socket = io();
+            var room = '';
+            var nickname = '';
+            $( document ).ready(function () {
                 if (!join) {
-                    socket.emit('join', {
-                        room: $('#room').val(),
-                        nickname: $('#nickname').val(),
-                        m: $('#m').val()
+                    console.log(join);
+                    $('#join').dialog({ 
+                        modal: true, 
+                        closeOnEscape: false, 
+                        buttons: {
+                            'Join': function () {
+                                if ($('#room').val() == '') {
+                                    $('#room').focus();
+                                    $('#error').html('Please input room');
+                                    return false;
+                                }
+                                if ($('#nickname').val() == '') {
+                                    $('#nickname').focus();
+                                    $('#error').html('Please input nickname');
+                                    return false;
+                                }
+                                room = $('#room').val();
+                                nickname = $('#nickname').val();
+                                socket.emit('join', {
+                                    room: room,
+                                    nickname: nickname
+                                });
+                                 $('#myroom').html(room + " room");
+                                 $('#myname').html(nickname);
+                                join = true;
+                                $(this).dialog("close");
+                            }
+                        },     
+                        open: function(event, ui) {$(".ui-dialog-titlebar-close").hide();}
                     });
-                    join = true;
-                    console.log('join ' + $('#room').val());
                 }
-                socket.emit('chat message', {
-                    room: $('#room').val(),
-                    nickname: $('#nickname').val(),
-                    m: $('#m').val()
+
+                $('#send').on('click', function(){
+                    if ($('#message').val == '') {
+                        return false;
+                    }
+                    socket.emit('message', {                       
+                        message: $('#message').val()
+                    });
+
+                    $('#message').val('');                    
                 });
 
-                $('#m').val('');
-                return false;
-            });
-
-            socket.on('chat message', function(msg){
-                $('#messages').append($('<li>').text(msg));
+                socket.on('message', function(msg){
+                    $('#messages').append($('<li>').text(msg));
+                });
             });
         </script>
     </body>

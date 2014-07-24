@@ -8,7 +8,7 @@ global.mysql   = require('./mysql');
 global.config  = require('./config')();
 
 //server.start(config.server);
-
+numCPUs = 1;
 if (cluster.isMaster) {
     for (var i = 0; i < numCPUs; i++) {
         cluster.fork();
