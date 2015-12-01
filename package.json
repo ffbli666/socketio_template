@@ -4,13 +4,9 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "express": "4.x",
-    "mongoose": "3.8.x",
-    "mysql": "*",
-    "async": "*",
-    "mongoose-double": "*",
-    "imagemagick": "*",
-    "bufferhelper": "*",
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "mysql": "^2.5.4",
     "socket.io": "^1.0.6",
     "socket.io-redis": "^0.1.3"
   }

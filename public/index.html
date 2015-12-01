@@ -17,7 +17,7 @@
                 width: 100%;
                 bottom: 0;
                 padding: 15px;
-            }           
+            }
         </style>
     </head>
     <body>
@@ -25,13 +25,13 @@
             <div class='row'>
                 <div class='col-md-12'>
                     <h2 id='myroom' class='control-label'>MyRoom</h2>
-                    
+
                 </div>
                 <div class='col-md-12'>
                     <h3 class='control-label'>message</h3>
                     <ul id='messages'></ul>
                 </div>
-            </div>            
+            </div>
         </div>
         <div id='operator'>
             <div class='form-group'>
@@ -52,7 +52,7 @@
                 <span id='error' class='error'> </span>
             </div>
         </div>
-        
+
 
         <script src='/socket.io/socket.io.js'></script>
         <script src='/js/jquery-1.11.1.min.js'></script>
@@ -63,10 +63,10 @@
             var room = '';
             var nickname = '';
             $( document ).ready(function () {
-                if (!join) {                    
-                    $('#join').dialog({ 
-                        modal: true, 
-                        closeOnEscape: false, 
+                if (!join) {
+                    $('#join').dialog({
+                        modal: true,
+                        closeOnEscape: false,
                         buttons: {
                             'Join': function () {
                                 if ($('#room').val() == '') {
@@ -90,7 +90,7 @@
                                 join = true;
                                 $(this).dialog("close");
                             }
-                        },     
+                        },
                         open: function(event, ui) {$(".ui-dialog-titlebar-close").hide();}
                     });
                 }
@@ -99,11 +99,11 @@
                     if ($('#message').val == '') {
                         return false;
                     }
-                    socket.emit('message', {                       
+                    socket.emit('message', {
                         message: $('#message').val()
                     });
 
-                    $('#message').val('');                    
+                    $('#message').val('');
                 });
 
                 socket.on('message', function(msg){

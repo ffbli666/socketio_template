@@ -1,22 +1,21 @@
-var async = require('async');
 module.exports = function(app, io) {
 	var users = [];
     var rooms = [];
-    
+
     //router
-    app.get('/hello', function(req, res){
-        res.send('Hello World');
-    });
-    
+    var hello = require('./controllers/hello');
+    app.get('/get', hello.get);
+    app.post('/post', hello.post);
+
     io.on('connection', function(socket) {
         console.log('a user connected');
 
         var nickname = undefined;
         var room = undefined;
-        
-        socket.on('join', function(msg) {            
+
+        socket.on('join', function(msg) {
             console.log(msg);
-            socket.join(msg.room);            
+            socket.join(msg.room);
             room = msg.room;
             nickname = msg.nickname;
 
