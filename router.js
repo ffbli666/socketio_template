@@ -3,7 +3,7 @@ module.exports = function(app, io) {
     var rooms = [];
 
     //router
-    var hello = require('./controllers/hello');
+    var hello = require('./application/controllers/hello');
     app.get('/get', hello.get);
     app.post('/post', hello.post);
 

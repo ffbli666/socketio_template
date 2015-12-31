@@ -2,12 +2,8 @@ var cluster    = require('cluster');
 var numCPUs    = require('os').cpus().length;
 var server     = require('./server');
 var fs         = require('fs');
-
-//global.mongodb = require('./mongodb');
-global.mysql   = require('./mysql');
 global.config  = require('./config')();
 
-//server.start(config.server);
 numCPUs = 1;
 if (cluster.isMaster) {
     for (var i = 0; i < numCPUs; i++) {
@@ -18,12 +14,10 @@ if (cluster.isMaster) {
     });
     cluster.on('exit', function(worker, code, signal) {
         console.log('worker ' + worker.process.pid + ' died');
-        //cluster.fork();  //if died create new children
+        cluster.fork();  //if died create new children
     });
 }
 else
 {
-    //mysql.start(config.mysql);
-    //mongodb.start(config.database);
     server.start(config.server);
 }

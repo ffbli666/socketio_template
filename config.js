@@ -1,21 +1,21 @@
 module.exports = function(app) {
     return {
         server: {
-            port: 8888
+            environment: 'staging', // staging or production
+            //environment: 'production',
+            port: 8888,
+            post_json_limit: '1mb',
+            root_path: '/home/vagrant/share/socketio_template', //set the project root path
+            timezone: 'Asia/Taipei'
         },
-        mongodb: {
-            host: 'localhost',
-            port: 27017,
-            db: 'mymongodb',
-            poolSize: 5
-        },
-        mysql: {
+        database: [{
+            driver   : 'mysql',
             host     : '127.0.0.1',
             user     : 'root',
             port     : '3306',
             password : 'mypassword',
             database : 'mydatabase',
             connectionLimit : 10,
-        }
+        }]
     };
-};
+}
